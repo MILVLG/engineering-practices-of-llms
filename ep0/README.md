@@ -2,10 +2,9 @@
 
 ## 第一步: Conda安装
 
-进入docker并安装 Conda
+安装 Conda
 (i取0-7)
 ```bash
-docker exec -it cann-i /bin/bash
 cd /data
 bash Miniconda3-latest-Linux-aarch64.sh
 ```
@@ -14,7 +13,6 @@ bash Miniconda3-latest-Linux-aarch64.sh
 # 第二步: 环境配置
 
 ```bash
-docker exec -it cann-i /bin/bash
 pip config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple
 conda tos accept --override-channels --channel https://repo.anaconda.com/pkgs/main
 conda tos accept --override-channels --channel https://repo.anaconda.com/pkgs/r
@@ -26,8 +24,8 @@ conda create -n llm_env python=3.10 -y
 ```bash
 conda activate llm_env
 cd /home
-cp -r /data/engineering-practices-of-llms-main /home/test_student/
-cd test_student/engineering-practices-of-llms-main/
+git clone https://github.com/MILVLG/engineering-practices-of-llms.git
+cd engineering-practices-of-llms/
 pip install -r requirements.txt 
 ```
 
@@ -36,12 +34,11 @@ pip install -r requirements.txt
 
 port请随意选择，例如8888。不冲突即可。
 ```bash
-jupyter notebook --allow-root --port=
+jupyter notebook --allow-root --port=8888
 ```
 
 另开一个终端，用于观察npu情况
 ```bash
-docker exec -it cann-i /bin/bash
 watch -n 0.1 -d npu-smi info
 ```
 
