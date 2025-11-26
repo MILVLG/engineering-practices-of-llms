@@ -15,7 +15,7 @@ six
 protobuf
 peft==0.7.1
 tiktoken
-jupyter notebook
+jupyter
 torchvision==0.19.0
-pip install matplotlib
-pip install onnxruntime
+matplotlib
+onnxruntime
