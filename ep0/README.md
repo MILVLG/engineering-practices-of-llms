@@ -1,15 +1,21 @@
-# 安装包、数据等已提前存至/data下
+# CIFAR10简单分类网络训练/大模型推理
+
+## 实验目标与项目介绍
+
+本实验旨在帮助学生熟悉pytorch相关内容，熟悉模型。通过本实验，学生将学习如何处理数据、搭建简单网络，以及对推理有一定的理解。
 
 ## 第一步: Conda安装
 
 安装 Conda
-(i取0-7)
 ```bash
 cd /data
 bash Miniconda3-latest-Linux-aarch64.sh
 ```
 重启终端
 
+```bash
+exec bash
+```
 # 第二步: 环境配置
 
 ```bash
@@ -23,7 +29,8 @@ conda create -n llm_env python=3.10 -y
 
 ```bash
 conda activate llm_env
-cd /home
+cd /home/test_student/
+yum install git
 git clone https://github.com/MILVLG/engineering-practices-of-llms.git
 cd engineering-practices-of-llms/
 pip install -r requirements.txt 
@@ -37,6 +44,12 @@ port请随意选择，例如8888。不冲突即可。
 jupyter notebook --allow-root --port=8888
 ```
 
+如果你使用的是简单的ssh，端口不会直接转发到你的本机。请另开终端，将端口转发
+```bash
+ssh -L jupyter端口号:localhost:jupyter端口号 用户名@公网ip -p 用户端口
+```
+
+
 另开一个终端，用于观察npu情况
 ```bash
 watch -n 0.1 -d npu-smi info
@@ -47,5 +60,5 @@ watch -n 0.1 -d npu-smi info
 使用以下命令将准备好的数据移动到工作路径下
 
 ```bash
-cp -r /data/engineering-practices-of-llms/experiment0/data /home/test_student/engineering-practices-of-llms-main/experiment0
+ cp -r /data/engineering-practices-of-llms/experiment0/data /home/test_student/engineering-practices-of-llms/ep0
 ```
