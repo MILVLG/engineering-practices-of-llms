@@ -3,7 +3,7 @@
 ## 实验目标与项目介绍
 
 本实验旨在帮助学生熟悉pytorch相关内容，熟悉模型。通过本实验，学生将学习如何处理数据、搭建简单网络，以及对推理有一定的理解。
-
+本项目的QWEN部分实验代码在 [qwen-ascend-llm](https://github.com/Tlntin/qwen-ascend-llm.git) 上改造而成，针对本次实践进行优化。
 ## 第一步: Conda安装
 
 安装 Conda
@@ -30,7 +30,6 @@ conda create -n llm_env python=3.10 -y
 ```bash
 conda activate llm_env
 cd /home/test_student/
-yum install git
 git clone https://github.com/MILVLG/engineering-practices-of-llms.git
 cd engineering-practices-of-llms/
 pip install -r requirements.txt 
