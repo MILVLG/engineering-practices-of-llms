@@ -13,13 +13,13 @@ WORLD_SIZE=$(($GPUS_PER_NODE*$NNODES))
 DATA_PATH="/data2/datasets/pretrain_preprocessed/train/mmap_data"
 VAL_DATA_PATH="/data2/datasets/pretrain_preprocessed/val/mmap_data"
 TOKENIZER_MODEL="assets/zen_tokenizer"
-TP=1
+TP=8
 PP=1
 CP=1
 TOKENS_PER_STEP=524288
 TRAIN_ITERS=20000
 BATCH_LENGTH=4096
-BATCH_SIZE_PER_DEVICE=4
+BATCH_SIZE_PER_DEVICE=8
 CKPT_SAVE_DIR="outputs/zen_500m_$(expr $TRAIN_ITERS/1000)k"
 
 echo "=================== Training Config ==============================================="
@@ -46,11 +46,11 @@ DISTRIBUTED_ARGS="
 
     # --context-parallel-size ${CP} \
     # --context-parallel-algo ulysses_cp_algo \
+    # --use-mcore-models \
 GPT_ARGS="
     --tensor-model-parallel-size ${TP} \
     --pipeline-model-parallel-size ${PP} \
     --sequence-parallel \
-    --use-mcore-models \
     --make-vocab-size-divisible-by 128 \
     --num-layers 24 \
     --hidden-size 896 \

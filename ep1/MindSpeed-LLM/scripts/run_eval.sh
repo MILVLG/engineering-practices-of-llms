@@ -54,7 +54,8 @@ COMMON_ARGS=(
 
 mkdir -p "${LOG_DIR}"
 
-TASK="mmlu"
+TASK_TYPE="mmlu"
+TASK_FOLDER="mmlu_subset"
 ASCEND_VISIBLE_DEVICES=0 torchrun \
   --nproc_per_node 1 --nnodes 1 --node_rank 0 \
   --master_addr "${MASTER_ADDR}" --master_port "${MASTER_PORT_BASE}" \
@@ -62,5 +63,5 @@ ASCEND_VISIBLE_DEVICES=0 torchrun \
   --add-eos-token $'\n' $'\n\n' \
   --prompt-type zen \
   --load "${CKPT}" \
-  --task $TASK --task-data-path "${MMLU_DATA:-${DATA_ROOT}/$TASK/test}" --eval-language en \
-  2>&1 | tee "${LOG_DIR}/$TASK.log"
+  --task $TASK_TYPE --task-data-path "${MMLU_DATA:-${DATA_ROOT}/$TASK_FOLDER/test}" --eval-language en \
+  2>&1 | tee "${LOG_DIR}/$TASK_FOLDER.log"
