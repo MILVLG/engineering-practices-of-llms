@@ -1,0 +1,11 @@
+{
+  "<|bos|>": 65527,
+  "<|user_start|>": 65528,
+  "<|user_end|>": 65529,
+  "<|assistant_start|>": 65530,
+  "<|assistant_end|>": 65531,
+  "<|python_start|>": 65532,
+  "<|python_end|>": 65533,
+  "<|output_start|>": 65534,
+  "<|output_end|>": 65535
+}
