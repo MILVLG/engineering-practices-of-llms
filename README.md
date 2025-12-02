@@ -24,4 +24,4 @@
 
 ## 贡献者
 
-本仓库代码由 [@ParadoxZW](https://github.com/ParadoxZW)、[@real-fzw](https://github.com/real-fzw)、[@M3Dade](https://github.com/M3Dade)共同开发和维度，感谢所有参与和支持本项目的老师和同学，感谢本项目所依赖的开源代码（如 [Megatron-LM](https://github.com/NVIDIA/Megatron-LM)、[MindSpeed](https://github.com/Ascend/MindSpeed)、[MindSpeed](https://github.com/Ascend/MindSpeed-RL)等）的原始作者和相关组织。
+本仓库代码由 [@ParadoxZW](https://github.com/ParadoxZW)、[@real-fzw](https://github.com/real-fzw)、[@M3Dade](https://github.com/M3Dade)共同开发和维度，感谢所有参与和支持本项目的老师和同学，感谢本项目所依赖的开源代码（如 [Megatron-LM](https://github.com/NVIDIA/Megatron-LM)、[MindSpeed](https://github.com/Ascend/MindSpeed)、[MindSpeed-RL](https://github.com/Ascend/MindSpeed-RL)等）的原始作者和相关组织。
