@@ -6,6 +6,8 @@
 
 本项目的实验代码在 [MindSpeed-LLM](https://gitee.com/ascend/MindSpeed-LLM) 上改造而成，针对本次实践的需求优化了实验脚本（特别是`MindSpeed-LLM/scripts`中的内容）和部分代码。
 
+**分组实验安排：4人一组，2人先做效率ablation实验（讨论合作进行，一次只跑一个进程），另外2人同步做数据采样和预处理（讨论合作进行，一次只跑一个进程）。**
+
 ## 实验依赖与环境配置
 
 ### 1. 软硬件基础环境
@@ -232,7 +234,7 @@ bash scripts/run_eval.sh outputs/zen_500m_20k
 
 吞吐效率的指标计算方式为：`TOKENS_PER_STEP / (sec_per_step)`。其中，`TOKENS_PER_STEP`为训练配置中的参数，`sec_per_step`为训练输出/日志中的`time/step`字段，单位为秒。
 
-#### 5.2 模型性能消融实验
+#### 5.2 模型性能消融实验（选做，加分项）
 
 可选的实验因子包括：
 
