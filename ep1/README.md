@@ -26,6 +26,7 @@
 
 - `/data2/MindSpeed-LLM/`: 实验项目代码，与本仓库中的`ep1/MindSpeed-LLM`目录一致（所以无需再手动clone项目）。本项目将以该目录作为工作根目录。
 - `/data2/datasets/Ultra-FineWeb-ShaoZW_subset`: 预训练基础语料，我们的实验将从中采样一份 50GB 的子集作为预训练数据集。
+- `/data2/datasets/smoke_test`: 预处理好的小数据集，用于冒烟测试和效率实验。
 - `/data2/datasets/eval/mmlu_subset`: MMLU 评估数据集的一个子集。
 - `/data2/datasets/eval/cmmlu_subset`: CMMLU 评估数据集的一个子集。
 
@@ -79,7 +80,7 @@ screen -ls
 - Tokenizer：使用`assets/zen_tokenizer`，是项目组预先基于`Ultra-FineWeb-ShaoZW_subset`数据集训练得到的SentencePiece tokenizer。
 - 预训练数据集：基于`Ultra-FineWeb-ShaoZW_subset`数据集，使用`scripts/pt_data_sample.sh`脚本采样存储规模为50GB的预训练数据集，可自行调整采样策略（详见[数据集准备](#数据集准备)部分）。
 - 评估数据集：使用`/data2/datasets/eval/mmlu_subset`和`/data2/datasets/eval/cmmlu_subset`两个数据集进行模型评估。
-- 研究性任务：针对预训练过程中的*训练吞吐效率（必选）*和*模型性能（可选，作为加分项）*两个维度，进行消融实验和分析，具体实验设计见[消融实验](#消融实验)部分。
+- 研究性任务：针对预训练过程中的*训练吞吐效率（必选）*和*模型性能（可选，作为加分项）*两个维度，进行消融实验和分析，具体实验设计见[消融实验](#消融实验)部分。效率ablation实验在`/data2/datasets/smoke_test`中进行，只需要修改`scripts/pretrain_model.sh`中的数据集路径，可立即使用。
 
 <!-- 请参考下图工作流合理分配小组工作，安排实验进度：
 
