@@ -245,14 +245,36 @@ pip install -r requirements.txt
 
 ![实验工作流](../../sources/images/r1_zero/r1_zero_roadmap.png) -->
 
+### 模型下载
+1.  **使用hf-mirror**：进入[hf-mirror]{https://hf-mirror.com/},使用 huggingface-cli
+```
+1. 安装依赖
+pip install -U huggingface_hub
+
+2. 设置环境变量
+Linux
+export HF_ENDPOINT=https://hf-mirror.com
+```
+2.  **下载模型**：[Qwen2.5-7B]{https://hf-mirror.com/Qwen/Qwen2.5-7B}。
+```
+huggingface-cli download --resume-download Qwen/Qwen2.5-7B --local-dir  Qwen2.5-7B
+```
+
 ### 数据集准备与预处理
 
-1.  **下载数据**：下载 DeepScaler 数据集（Parquet格式）。
-2.  **配置模板**：在 `configs/datasets/deepscaler.yaml` 中确认数据映射。
+1.  **下载数据**：下载 DeepScaler 数据集与gsm8k 数据集。分别放置于 `dataset/deepscaler.json` 和 `dataset/gsm8k/test.jsonl`
+2.  **配置模板**：修改 `configs/datasets/deepscaler.yaml` 中确认数据映射。
+```shell
+input: ./deepscaler.json
+tokenizer_name_or_path: ./Qwen2.5-7B/
+output_prefix: ./dataset/deepscaler/data
+```
 3.  **执行预处理**：将数据转换为训练所需的格式，并添加 R1 风格的 Prompt 模板。
 
 ```bash
 # 在 MindSpeed-RL 目录下执行
+cd MindSpeed-RL
+mkdir -p ./dataset/deepscaler
 bash examples/data/preprocess_data.sh deepscaler
 ```
 *注：Prompt 模板会自动包裹 `<think>` 和 `<answer>` 标签引导模型输出。*
@@ -260,31 +282,108 @@ bash examples/data/preprocess_data.sh deepscaler
 ### 模型权重转换
 
 MindSpeed-RL 基于 Megatron 架构，需要将 HuggingFace 格式的权重转换为 Megatron 格式。
-
+MindSpeed-LLM 下提供了转换代码。修改路径和配置信息。
 ```bash
-# 参考 examples/mcore/qwen25/convert_ckpt_hf2mcore.sh
-# 修改脚本中的 LOAD_CHECKPOINT_PATH 为你下载的 Qwen2.5-7B 路径
-# 修改 SAVE_CHECKPOINT_PATH 为转换后的保存路径
-bash examples/mcore/qwen25/convert_ckpt_hf2mcore.sh
+cd ../Megatron-LM
+git checkout core_v0.12.0
+# rm -rf MindSpeed-LLM/megatron
+cd ../MindSpeed
+git checkout master
+# rm -rf MindSpeed-LLM/mindspeed
+
+cd ../MindSpeed-LLM
+git stash
+git checkout master
+git stash pop
+cp -r ../MindSpeed/mindspeed ./
+cp -r ../Megatron-LM/megatron ./
+pip install peft
+bash examples/mcore/qwen25/ckpt_convert_qwen25_hf2mcore.sh
 ```
 
 ### 模型后训练 (GRPO)
 
 本实验使用基于规则的奖励模型（Rule-based Reward），不训练独立的 Reward Model。
 
-1.  **启动 Ray 集群**：
+1.  **配置训练参数**：
+    修改 `configs/grpo_qwen25_7b_A3.yaml`。关键参数说明：
+    - `megatron_training`:
+        -  `tokenizer_name_or_path`: ./Qwen2.5-7B/
+        -  `data_path`: ./MindSpeed-RL/dataset/data
+    - `actor_config`:
+        -   `load`: ./Qwen2.5-7B_mcore/  
+        -   `save`: ./Qwen2.5-7B_mcore_math40k/
+        -   `tensor_model_parallel_size`: 4
+        -   `pipeline_model_parallel_size`: 1
+    - `rl_config`:
+        - `num_npus`: 8 (使用单机8卡)
+    - `generate_config`:
+        -   `infer_tensor_parallel_size`: 4       # 8卡推理：TP=4
+    - `kl_coeff`: KL 散度系数，控制模型不偏离基座太远。
+    - `n_samples_per_prompt`: 组采样个数 (G)，本实验设为8。
+
+2.  **配置训练脚本**：
+    修改`examples/grpo/grpo_trainer_qwen25_7b.sh`
+ 
+    1.核心网络配置 
+    脚本中有两处需要修改网络相关的变量，请确保在所有节点上根据实际情况填写。
+
+    1.1 获取网卡名称和 IP
+    在终端运行以下命令查看你的网卡名称（Interface Name）和 IP 地址：
+    ```bash
+    yum install -y net-tools iproute
+    ```
+    运行
+    ```
+    ifconfig
+    # 或
+    python -c "import socket; import fcntl; import struct; import array; 
+    def get_interfaces():
+        max_ifaces = 32; bytes = max_ifaces * 32
+        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        names = array.array('B', b'\0' * bytes)
+        outbytes = fcntl.ioctl(s.fileno(), 0x8912, struct.pack('iL', bytes, names.buffer_info()[0]))[0]
+        namestr = names.tobytes(); lst = []
+        for i in range(0, outbytes, 40):
+            name = namestr[i:i+16].split(b'\0', 1)[0].decode()
+            try:
+                ip = socket.inet_ntoa(fcntl.ioctl(s.fileno(), 0x8915, struct.pack('256s', name[:15].encode('utf-8')))[20:24])
+                lst.append((name, ip))
+            except: pass
+        return lst
+    print('Found interfaces:'); 
+    for name, ip in get_interfaces(): print(f'Name: {name} | IP: {ip}')"
+    ```
+    找到对应内网通信 IP 的网卡名称（例如：eth0）。
+
+    1.2 修改脚本变量
+    在脚本中找到以下几行并进行修改：
+    ```bash
+    # [修改点 1] 设置主节点 IP 地址
+    # 单机训练，这里填本机 IP
+    MASTER_ADDR="x.x.x.x"  # <--- 修改这里
+
+    # [修改点 2] 设置当前节点的通信网卡名称
+    # 用于 Ray 获取本机 IP 进行节点注册
+    SOCKET_IFNAME="eth0"         # <--- 修改这里 (填你通过 ifconfig 查到的网卡名)
+
+    # 注意：脚本开头有一行 SOCKET_IFNAME="Your SOCKET IFNAME"，但脚本中间又重新定义了一次 SOCKET_IFNAME="SOCKET IFNAME FOR CURRENT NODE"。建议直接修改中间那一行，或者确保两处一致。
+    
+    # [修改点 3] 设置节点卡数
+    NPUS_PER_NODE=8
+
+    #  [修改点 4]请确认该文件存在(可通过 find /usr -name libjemalloc.so.2 确认)
+    export LD_PRELOAD=/usr/lib64/libjemalloc.so.2
+    export LD_PRELOAD=YOUR_PATH
+    ```
+
+2.  **启动 Ray 集群**：
     GRPO 训练依赖 Ray 进行分布式调度。
     ```bash
     # 在主节点启动 Ray head
     export MASTER_ADDR=localhost
     ray start --head --port 6344 --dashboard-host=$MASTER_ADDR --dashboard-port=8260
     ```
-
-2.  **配置训练参数**：
-    查看 `configs/grpo_qwen25_7b_A3.yaml`。关键参数说明：
-    - `num_gpus`: 8 (使用单机8卡)
-    - `kl_coeff`: KL 散度系数，控制模型不偏离基座太远。
-    - `num_generations`: 组采样个数 (G)，通常设为 4 或 8。
 
 3.  **启动训练**：
     ```bash
@@ -293,12 +392,13 @@ bash examples/mcore/qwen25/convert_ckpt_hf2mcore.sh
     export CUDA_DEVICE_MAX_CONNECTIONS=1
     
     # 启动训练脚本
+    chmod 7 examples/grpo/grpo_trainer_qwen25_7b.sh
     bash examples/grpo/grpo_trainer_qwen25_7b.sh
     ```
 
 ### 模型评估
 
-训练完成后，需要将 Megatron 权重转回 HuggingFace 格式，并使用数学评测集（如 MATH-500）进行评估。
+训练完成后，需要将 Megatron 权重转回 HuggingFace 格式，并使用数学评测集（gsmk8k）进行评估。
 
 1.  **权重反转**：使用 `convert_ckpt_mcore2hf.sh` 脚本。
 2.  **推理评测**：使用 vLLM 或简单的推理脚本加载模型，测试其在数学问题上的 Pass@1 准确率。
