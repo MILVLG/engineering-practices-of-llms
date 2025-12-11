@@ -14,19 +14,23 @@
 
 ## 实验设计与指导
 
-### 第一步：实验环境准备
+### 第一步：实验环境准备(均以Qwen1.5 7b为例)
 本实验的基础环境基本与实验一相同，只需要额外下载模型和数据集即可
 ```bash
-huggingface-cli download 模型名（例如Qwen/Qwen2.5-7B） --local-dir 模型存放路径
+export HF_ENDPOINT=https://hf-mirror.com
+```
+
+```bash
+huggingface-cli download Qwen/Qwen1.5-7B --local-dir 模型存放路径
 ```
 
 ### 第二步：模型权重转换
 由于实验使用的是Ascend 910B，而Qwen2.5-7B模型是在NVIDIA GPU上预训练的，因此需要将模型权重转换为Ascend 910B兼容的格式。（hf2mcore）
 ```bash
-# 以Qwen2.5-7B为例
+# 以Qwen1.5-7B为例
 # 注意修改模型路径和保存路径
 cd MindSpeed-LLM
-bash examples/mcore/qwen25/ckpt_convert_qwen25_hf2mcore.sh
+bash examples/mcore/qwen15/ckpt_convert_qwen15_hf2mcore.sh
 ```
 关键参数
 - `--target-tensor-parallel-size`：目标张量并行大小（例如8）
@@ -54,7 +58,10 @@ Qwen2.5-7B-mcore/
         ├── model_optim_rng.pt
 ├── latest_checkpointed_iteration.txt
 ```
-
+```bash
+# 可以验证是否模型转换成功，进行简单的对话
+bash examples/mcore/qwen25/generate_qwen15_7b_ptd.sh
+```
 
 ### 第三步：数据集格式转换
 本实验使用的微调数据集为alpaca-chinese-52k-v3.json，
@@ -87,6 +94,11 @@ python ./preprocess_data.py \
         --prompt-type qwen \ # 模型prompt类型
         --map-keys '{"prompt": "zh_instruction", "query": "zh_input", "response": "zh_output"}' # 数据集字段映射（根据实际数据集字段修改）
 ```
+或直接运行
+```bash
+bash example/mcore/qwen15/data_convert_qwen15_ft.sh
+```
+
 
 ### 第四步 模型微调
 #### 全量微调
@@ -94,14 +106,14 @@ python ./preprocess_data.py \
 一般命名为 tune_模型名_大小_full_ptd.sh
 以Qwen2.5-7B为例
 ```bash
-bash example/mcore/qwen25/tune_qwen25_7b_full_ptd.sh
+bash example/mcore/qwen15/tune_qwen25_7b_full_ptd.sh
 ```
 #### 基于LoRA的微调
 基于LoRA的微调是指在全量微调的基础上，通过添加低秩适配器（LoRA）来减少微调参数数量，从而提高微调效率。
 一般命名为 tune_模型名_大小_lora_ptd.sh
 以Qwen2.5-7B为例
 ```bash
-bash example/mcore/qwen25/tune_qwen25_7b_lora_ptd.sh
+bash example/mcore/qwen25/tune_qwen15_7b_lora_ptd.sh
 ```
 
 注意
@@ -149,14 +161,13 @@ bash example/mcore/qwen25/tune_qwen25_7b_lora_ptd.sh
 可以进行简单的对话
 ```bash
 bash examples/mcore/qwen25/generate_qwen25_7b_ptd.sh
-#  lora
-bash examples/mcore/qwen25/generate_qwen25_7b_lora_ptd.sh
 ```
 
 ### 第六步 模型评估
 在ceval数据集上评估模型
 ```bash
 bash examples/mcore/qwen25/evaluate_qwen25_7b_ptd.sh
+bash examples/mcore/qwen25/evaluate_qwen15_7b_lora_ptd.sh
 ```
 - 模板与分词器
   - `--task`：改为ceval
