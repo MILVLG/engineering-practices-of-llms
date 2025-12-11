@@ -89,9 +89,10 @@ pip install -e . --no-build-isolation
 ---
 
 # 克隆 MindSpeed-LLM（昇腾适配套件）
+```bash
 cd ..
 git clone https://gitee.com/ascend/MindSpeed-LLM.git
-
+```
 
 ## 🧠 集成 Megatron-LM
 ```bash
