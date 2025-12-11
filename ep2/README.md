@@ -38,7 +38,7 @@ bash examples/mcore/qwen15/ckpt_convert_qwen15_hf2mcore.sh
 
 成功转换后的模型文件结构如下：(tp=8,pp=1为例)
 ```
-Qwen2.5-7B-mcore/
+Qwen1.5-7B-mcore/
 ├── iter_0000001/
     ├── mp_rank_00/
         ├── model_optim_rng.pt
@@ -60,7 +60,7 @@ Qwen2.5-7B-mcore/
 ```
 ```bash
 # 可以验证是否模型转换成功，进行简单的对话
-bash examples/mcore/qwen25/generate_qwen15_7b_ptd.sh
+bash examples/mcore/qwen15/generate_qwen15_7b_ptd.sh
 ```
 
 ### 第三步：数据集格式转换
@@ -85,7 +85,7 @@ alpaca-chinese-52k-v3.json 样例展示
 ```bash
 python ./preprocess_data.py \
         --input 数据集路径 \
-        --tokenizer-name-or-path 模型tokenizer存放路径（例如Qwen/Qwen2.5-7B） \
+        --tokenizer-name-or-path 模型tokenizer存放路径（例如Qwen/Qwen1.5-7B） \
         --output-prefix 转换后数据集存放路径 \
         --workers 4 \ # 工作线程数
         --log-interval 1000 \ # 日志打印间隔
@@ -106,14 +106,14 @@ bash example/mcore/qwen15/data_convert_qwen15_ft.sh
 一般命名为 tune_模型名_大小_full_ptd.sh
 以Qwen2.5-7B为例
 ```bash
-bash example/mcore/qwen15/tune_qwen25_7b_full_ptd.sh
+bash example/mcore/qwen15/tune_qwen15_7b_full_ptd.sh
 ```
 #### 基于LoRA的微调
 基于LoRA的微调是指在全量微调的基础上，通过添加低秩适配器（LoRA）来减少微调参数数量，从而提高微调效率。
 一般命名为 tune_模型名_大小_lora_ptd.sh
 以Qwen2.5-7B为例
 ```bash
-bash example/mcore/qwen25/tune_qwen15_7b_lora_ptd.sh
+bash example/mcore/qwen15/tune_qwen15_7b_lora_ptd.sh
 ```
 
 注意
@@ -160,19 +160,19 @@ bash example/mcore/qwen25/tune_qwen15_7b_lora_ptd.sh
 ### 第五步 模型部署
 可以进行简单的对话
 ```bash
-bash examples/mcore/qwen25/generate_qwen25_7b_ptd.sh
+bash examples/mcore/qwen15/generate_qwen15_7b_ptd.sh
 ```
 
 ### 第六步 模型评估
 在ceval数据集上评估模型
 ```bash
-bash examples/mcore/qwen25/evaluate_qwen25_7b_ptd.sh
-bash examples/mcore/qwen25/evaluate_qwen15_7b_lora_ptd.sh
+bash examples/mcore/qwen15/evaluate_qwen15_7b_ptd.sh
+bash examples/mcore/qwen15/evaluate_qwen15_7b_lora_ptd.sh
 ```
 - 模板与分词器
   - `--task`：改为ceval
 ## 实践作业提交内容
 
-- 项目输出的微调log文件和评估log文件
+- 项目输出的微调log文件和评估log文件,tensorboard训练曲线（tensorboard --logdir=log路径）即可查看
 - 实验报告，内容包括但不限于实验经过记录、微调与评估结果分析、消融实验结果与分析等
 - 加分项：自己自由选择模型和数据集进行微调训练
