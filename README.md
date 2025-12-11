@@ -8,12 +8,15 @@
 
 - `ep0/`：第0次实践课代码，目标为掌握PyTorch和HF transformers库的基本使用，并完成一个简单的大模型推理任务。
 - `ep1/`：第1次实践课代码，目标为掌握LLM预训练的基本技术和流程，实现一个小型LLM的预训练和评估，对训练吞吐效率和模型性能进行实验分析。
-- `ep2/`：第2次实践课代码，目标为掌握LLM微调的基本技术和流程，对Qwen系列模型进行指令微调和评估，对微调方法和参数等进行实验分析
-- `ep3/`：第3次实践课代码，目标为。。。
+- `ep2/`：第2次实践课代码，目标为掌握LLM微调的基本技术和流程，对Qwen系列模型进行指令微调和评估，对微调方法和参数等进行实验分析。
+- `ep3/`：第3次实践课代码，目标为掌握LLM后训练中基于GRPO强化学习的基本技术和流程，实现一个小型LLM的后训练和评估。
+
 
 ## 环境配置
 
-请参考`base_environment.md`文件，依据其指引先完成本项目所需的总体实验环境的配置。各实验的具体环境要求和依赖请参考各实验目录下的README文件。
+~~请参考`base_environment.md`文件，依据其指引先完成本项目所需的总体实验环境的配置。各实验的具体环境要求和依赖请参考各实验目录下的README文件。~~ 
+
+助教们会为大家尽量配置好基础环境（包括软件依赖和大规模文件），大家可以直接使用。若需要少量环境配置操作，请遵循助教指导或参考各实验内部 README.md 文件。
 
 ## 使用说明
 
@@ -23,4 +26,4 @@
 
 ## 贡献者
 
-本仓库代码由 [@ParadoxZW](https://github.com/ParadoxZW)、[@real-fzw](https://github.com/real-fzw)。。。共同开发和维度，感谢所有参与和支持本项目的老师和同学，感谢本项目所依赖的开源代码（如 [Megatron-LM](https://github.com/NVIDIA/Megatron-LM)、[MindSpeed](https://github.com/Ascend/MindSpeed) 等）的原始作者和相关组织。
+本仓库代码由 [@ParadoxZW](https://github.com/ParadoxZW)、[@real-fzw](https://github.com/real-fzw)、[@M3Dade](https://github.com/M3Dade)共同开发和维度，感谢所有参与和支持本项目的老师和同学，感谢本项目所依赖的开源代码（如 [Megatron-LM](https://github.com/NVIDIA/Megatron-LM)、[MindSpeed](https://github.com/Ascend/MindSpeed)、[MindSpeed-RL](https://github.com/Ascend/MindSpeed-RL)等）的原始作者和相关组织。

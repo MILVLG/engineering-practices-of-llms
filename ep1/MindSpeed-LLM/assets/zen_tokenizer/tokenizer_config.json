@@ -1,0 +1,23 @@
+{
+  "tokenizer_class": "PreTrainedTokenizerFast",
+  "model_max_length": 4096,
+  "padding_side": "right",
+  "truncation_side": "right",
+  "bos_token": "<|bos|>",
+  "eos_token": "<|bos|>",
+  "pad_token": "<|bos|>",
+  "unk_token": null,
+  "clean_up_tokenization_spaces": false,
+  "additional_special_tokens": [
+    "<|bos|>",
+    "<|user_start|>",
+    "<|user_end|>",
+    "<|assistant_start|>",
+    "<|assistant_end|>",
+    "<|python_start|>",
+    "<|python_end|>",
+    "<|output_start|>",
+    "<|output_end|>"
+  ],
+  "name_or_path": "huawei"
+}
