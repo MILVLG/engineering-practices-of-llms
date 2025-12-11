@@ -97,7 +97,6 @@ git clone https://gitee.com/ascend/MindSpeed-LLM.git
 ## 🧠 集成 Megatron-LM
 ```bash
 # 克隆官方 Megatron-LM（需能访问 GitHub）
-cd ..
 git clone https://github.com/NVIDIA/Megatron-LM.git
 cd Megatron-LM
 git checkout core_r0.8.0
