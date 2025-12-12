@@ -57,7 +57,7 @@ GPT_ARGS="
     --rotary-base 1000000 \
     --lr 1.25e-6 \
     --min-lr 1.25e-7 \
-    --train-iters 5000 \
+    --train-iters 2000 \
     --lr-decay-style cosine \
     --untie-embeddings-and-output-weights \
     --disable-bias-linear \
@@ -95,7 +95,7 @@ DATA_ARGS="
 
 OUTPUT_ARGS="
     --log-interval 1 \
-    --save-interval 10 \
+    --save-interval 100 \
     --eval-interval 1000 \
     --eval-iters 0 \
     --tensorboard-dir ${TENSORBOARD_DIR} \
