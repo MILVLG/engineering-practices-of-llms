@@ -109,16 +109,22 @@ sed -i 's/os.chmod(\(.*\), 0o0777)/os.chmod(\1, 0o0750)/g' "$UTILS_PATH"
 ```
 #### 下载torch软件包和安装命令
 ```
+pip install torch==2.5.1
+```
+<!-- ```
 yum install wget
 wget https://download.pytorch.org/whl/cpu/torch-2.5.1-cp310-cp310-manylinux_2_17_aarch64.manylinux2014_aarch64.whl
 pip3 install torch-2.5.1-cp310-cp310-manylinux_2_17_aarch64.manylinux2014_aarch64.whl
-```
+``` -->
 
 #### 下载torch_npu软件包和安装命令
 ```
+pip install torch_npu==2.5.1.post1
+```
+<!-- ```
 wget https://gitcode.com/Ascend/pytorch/releases/download/v7.1.0-pytorch2.5.1/torch_npu-2.5.1.post1-cp310-cp310-manylinux_2_17_aarch64.manylinux2014_aarch64.whl
 pip3 install torch_npu-2.5.1.post1-cp310-cp310-manylinux_2_17_aarch64.manylinux2014_aarch64.whl
-```
+``` -->
 <!-- https://www.hiascend.com/document/detail/zh/canncommercial/700/envdeployment/instg/instg_0050.html -->
 ### apex for Ascend 构建参考 https://gitcode.com/Ascend/apex
 对于本实验环境
@@ -304,7 +310,7 @@ bash examples/mcore/qwen25/ckpt_convert_qwen25_hf2mcore.sh
 ### 模型后训练 (GRPO)
 
 本实验使用基于规则的奖励模型（Rule-based Reward），不训练独立的 Reward Model。
-
+训练步数step设置为500
 1.  **配置训练参数**：
     修改 `configs/grpo_qwen25_7b_A3.yaml`。关键参数说明：
     - `megatron_training`:
@@ -321,7 +327,7 @@ bash examples/mcore/qwen25/ckpt_convert_qwen25_hf2mcore.sh
         -   `infer_tensor_parallel_size`: 4       # 8卡推理：TP=4
     - `kl_coeff`: KL 散度系数，控制模型不偏离基座太远。
     - `n_samples_per_prompt`: 组采样个数 (G)，本实验设为8。
-
+ 
 2.  **配置训练脚本**：
     修改`examples/grpo/grpo_trainer_qwen25_7b.sh`
  
@@ -396,22 +402,45 @@ bash examples/mcore/qwen25/ckpt_convert_qwen25_hf2mcore.sh
     bash examples/grpo/grpo_trainer_qwen25_7b.sh
     ```
 
+
+### 模型部署
+可以进行简单的对话
+```bash
+cd MindSpeed-LLM
+bash examples/mcore/qwen25/generate_qwen25_7b_ptd.sh
+```
+
 ### 模型评估
 
-训练完成后，需要将 Megatron 权重转回 HuggingFace 格式，并使用数学评测集（gsmk8k）进行评估。
-
-1.  **权重反转**：使用 `convert_ckpt_mcore2hf.sh` 脚本。
-2.  **推理评测**：使用 vLLM 或简单的推理脚本加载模型，测试其在数学问题上的 Pass@1 准确率。
+训练完成后，使用数学评测集（gsmk8k）子集进行评估。
+复制同目录gsm8k_eval.py覆盖原文件
+```
+cp ./ep3/gsm8k_eval.py ./mindspeed_llm/tasks/evaluation/eval_impl/gsm8k_eval.py
+```
+复制同目录test.jsonl到数据目录下
+```
+cp ./ep3/test.jsonl ./dataset/gsm8k/test.jsonl
+```
+之后修改脚本
+```bash
+CHECKPOINT="./Qwen2.5-7B_mcore/"
+TOKENIZER_PATH="./Qwen2.5-7B/"
+DATA_PATH="./dataset/gsm8k/" # 对应./dataset/gsm8k/test.jsonl
+TASK="gsm8k"
+```
+然后
+```bash
+bash examples/mcore/qwen25/evaluate_qwen25_7b_ptd.sh
+```
 
 ### 消融实验 (选做)
 
 针对 GRPO 训练过程，选择以下任一维度进行消融实验：
 - **Reward 设计**：修改 `mindspeed_rl/reward/reward_rules.py`，调整格式奖励（Format Reward）和答案准确性奖励（Accuracy Reward）的权重，观察对收敛速度的影响。
 - **采样数量 (G)**：调整 GRPO 的 `num_generations` (例如从 4 改为 8)，分析显存占用与训练效果的权衡。
-- **迭代步数**：对比 200 iter 和 400 iter 的模型在 MATH-500 上的性能差异。
+- **迭代步数**：对比 200 iter 和 400 iter 的模型在 gsm8k 上的性能差异。
 
 ## 实践作业提交内容
-
 1.  **环境截图**：Docker 容器启动成功及 `pip list` 包含 mindspeed-rl 的截图。
 2.  **训练日志**：
     - 提供训练过程中的 Loss 曲线图（TensorBoard 截图或 Log 数据）。
@@ -419,5 +448,4 @@ bash examples/mcore/qwen25/ckpt_convert_qwen25_hf2mcore.sh
 3.  **Aha-Moment 样例**：
     - 截取一个训练后的模型输出 Case，展示其 `<think>` 标签内的思考过程（特别是自我修正或长链推理的部分）。
 4.  **实验报告**：
-    - 记录实验步骤、遇到的问题及解决方案。
-    - 分析消融实验的结果。
+    - 内容包括但不限于实验经过记录、训练与评估结果分析、消融实验结果与分析等
