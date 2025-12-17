@@ -109,7 +109,7 @@ bash example/mcore/qwen15/data_convert_qwen15_ft.sh
 bash example/mcore/qwen15/tune_qwen15_7b_full_ptd.sh
 ```
 #### 基于LoRA的微调
-基于LoRA的微调是指在全量微调的基础上，通过添加低秩适配器（LoRA）来减少微调参数数量，从而提高微调效率。
+基于LoRA的微调是指通过添加低秩适配器（LoRA）来减少微调参数数量，从而提高微调效率。
 一般命名为 tune_模型名_大小_lora_ptd.sh
 以Qwen2.5-7B为例
 ```bash
