@@ -239,6 +239,7 @@ cp -r mindspeed_llm ../MindSpeed-RL/
 cd ..
 
 cd ./MindSpeed-RL
+git checkout tags/2.1.0 -b v2.1.0
 pip install -r requirements.txt
 pip install antlr4-python3-runtime==4.9.3 --no-deps 
 ```
@@ -261,8 +262,6 @@ cd ..
 
 # 3. 安装 MindSpeed-RL
 cd MindSpeed-RL
-
-git checkout tags/2.1.0 -b v2.1.0
 pip install -r requirements.txt
 ``` -->
 
