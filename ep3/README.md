@@ -24,7 +24,8 @@
 # 1. 基于现有的 8.2.rc1 容器/镜像创建一个新镜像 (假设原镜像ID为 6d1a2236a49b)
 # 注意：请将 'my_lab_image:v1' 替换为你自己的名字，如 'zhangsan_rl_lab:v1'
 ContainerName='my_lab_image:v1'
-docker commit 6d1a2236a49b $ContainerName
+docker images # 查看镜像id
+docker commit '查找到的8.2.rc1的id' $ContainerName
 
 # 2. 启动新的实验容器
 # 修改/home/your_name/workspace:/workspace  请挂载你的工作目录到 /workspace 修改my_rl_experiment为自己的实验名
