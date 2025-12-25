@@ -64,6 +64,7 @@ CANN已安装cann-8.2.rc1
 部分安装代码如下
 ```
 # 安装conda
+yum install wget
 wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-aarch64.sh
 bash Miniconda3-latest-Linux-aarch64.sh
 
