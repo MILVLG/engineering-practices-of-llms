@@ -52,10 +52,9 @@ docker run -itd \
   $BaseImage \
   /bin/bash
 
-
+【容器外运行补丁1】
 # 把宿主机的 npu-smi 强行复制到容器的 /usr/local/bin 目录下
 docker cp /usr/local/sbin/npu-smi $My_Container_Name:/usr/local/bin/npu-smi
-
 # 给容器里的这个文件加上执行权限 (以防万一)
 docker exec -u 0 $My_Container_Name chmod +x /usr/local/bin/npu-smi
 
@@ -63,7 +62,7 @@ docker exec -u 0 $My_Container_Name chmod +x /usr/local/bin/npu-smi
 # 3. 进入容器
 docker exec -it $My_Container_Name bash
 
-
+【容器内运行补丁2】
 export LD_LIBRARY_PATH=/usr/local/Ascend/driver/lib64:/usr/local/Ascend/driver/lib64/common:/usr/local/Ascend/driver/lib64/driver:$LD_LIBRARY_PATH
 npu-smi info
 echo 'export LD_LIBRARY_PATH=/usr/local/Ascend/driver/lib64:/usr/local/Ascend/driver/lib64/common:/usr/local/Ascend/driver/lib64/driver:$LD_LIBRARY_PATH' >> ~/.bashrc
