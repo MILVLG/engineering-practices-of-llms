@@ -261,6 +261,7 @@ cd ..
 
 # 3. 安装 MindSpeed-RL
 cd MindSpeed-RL
+
 git checkout tags/2.1.0 -b v2.1.0
 pip install -r requirements.txt
 ``` -->
