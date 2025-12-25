@@ -19,8 +19,41 @@
 ### 1. 容器环境
 
 ```
-docker start cann-8.2.rc1
-docker exec -it cann-8.2.rc1 bash
+docker images #找到id
+BaseImage='' # 'a5fb032546cd' 
+
+# 容器名字带上你的名字，避免冲突
+My_Container_Name='' # zhangsan_GRPO 
+
+# 挂载你的个人工作目录
+WorkSpace='' # '/data1:/data1' '/data2:/data2'
+
+# 2. 启动容器 (直接用 BaseImage)
+docker run -itd \
+  --name ${My_Container_Name} \
+  --net=host \
+  --shm-size=500g \
+  --privileged \
+  --device=/dev/davinci0 \
+  --device=/dev/davinci1 \
+  --device=/dev/davinci2 \
+  --device=/dev/davinci3 \
+  --device=/dev/davinci4 \
+  --device=/dev/davinci5 \
+  --device=/dev/davinci6 \
+  --device=/dev/davinci7 \
+  --device=/dev/davinci_manager \
+  --device=/dev/devmm_svm \
+  --device=/dev/hisi_hdc \
+  -v /etc/ascend_install.info:/etc/ascend_install.info \
+  -v /usr/local/Ascend/add-ons/:/usr/local/Ascend/add-ons/ \
+  -v /usr/local/Ascend/driver:/usr/local/Ascend/driver \
+  -v ${WorkSpace} \
+  $BaseImage \
+  /bin/bash
+
+# 3. 进入容器
+docker exec -it $My_Container_Name bash
 ```
 
 ### 2. 软件安装与源码准备
