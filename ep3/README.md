@@ -16,47 +16,11 @@
 |------------|----------------|------------|------------------|------------------|
 | 昇腾910B   | Ascend HDK 25.3.0，**CANN 8.2.RC1** | Python 3.10  | torch 2.5.1，torch-npu 2.5.1，ray 2.42.1 | 分支 2.1.0 |
 
-### 1. 容器环境准备（重要）
+### 1. 容器环境
 
-为了避免破坏服务器上现有的 `cann:8.2.rc1` 基础镜像，请**务必**按照以下步骤克隆一个新的实验镜像并启动容器：
-
-```bash
-# 1. 基于现有的 8.2.rc1 容器/镜像创建一个新镜像 (假设原镜像ID为 6d1a2236a49b)
-# 注意：请将 'my_lab_image:v1' 替换为你自己的名字，如 'zhangsan_rl_lab:v1'
-ContainerName='my_lab_image:v1'
-docker images # 查看镜像id
-docker commit '查找到的8.2.rc1的id' $ContainerName
-
-# 2. 启动新的实验容器
-# 修改/home/your_name/workspace:/workspace  请挂载你的工作目录到 /workspace 修改my_rl_experiment为自己的实验名
-# 例如我的工作目录放在/data1:/data1 下，则
-My_RL_Experiment='GRPO'
-WorkSpace='/data1:/data1'
-docker run -itd \
-  --name ${My_RL_Experiment} \
-  --net=host \
-  --shm-size=500g \
-  --privileged \
-  --device=/dev/davinci0 \
-  --device=/dev/davinci1 \
-  --device=/dev/davinci2 \
-  --device=/dev/davinci3 \
-  --device=/dev/davinci4 \
-  --device=/dev/davinci5 \
-  --device=/dev/davinci6 \
-  --device=/dev/davinci7 \
-  --device=/dev/davinci_manager \
-  --device=/dev/devmm_svm \
-  --device=/dev/hisi_hdc \
-  -v /etc/ascend_install.info:/etc/ascend_install.info \
-  -v /usr/local/Ascend/add-ons/:/usr/local/Ascend/add-ons/ \
-  -v /usr/local/Ascend/driver:/usr/local/Ascend/driver \
-  -v ${WorkSpace} \
-  $ContainerName \
-  /bin/bash
-
-# 3. 进入容器
-docker exec -it $My_RL_Experiment bash
+```
+docker start cann-8.2.rc1
+docker exec -it cann-8.2.rc1 bash
 ```
 
 ### 2. 软件安装与源码准备
@@ -65,6 +29,19 @@ docker exec -it $My_RL_Experiment bash
 [安装指南](https://gitcode.com/Ascend/MindSpeed-RL/blob/master/docs/install_guide.md#%E5%AE%89%E8%A3%85%E6%8C%87%E5%8D%97)配置 MindSpeed-RL 2.1.0 环境：
 CANN已安装cann-8.2.rc1
 部分安装代码如下
+```
+# 安装conda
+wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-aarch64.sh
+bash Miniconda3-latest-Linux-aarch64.sh
+
+# 安装tmux
+yum install tmux
+tmux 
+# ctrl + b + d 退出
+# tmux a -t n 进入第n个
+```
+
+
 
 ### vllm及相关依赖安装：
 （注：环境中需要安装git，因为vllm的安装过程依赖git）
