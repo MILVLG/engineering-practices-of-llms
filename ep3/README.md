@@ -149,7 +149,7 @@ pip3 install torch_npu-2.5.1.post1-cp310-cp310-manylinux_2_17_aarch64.manylinux2
 
 # 安装依赖
 yum install -y patch libjpeg-turbo-devel dos2unix openblas git 
-yum install -y gcc==7.3.0 cmake==3.12.0
+yum install -y gcc==10.3.1 cmake==4.2.0
 
 # 请确保已安装PyTorch框架且setuptools版本小于等于65.7.0，若版本不符合条件，可使用以下命令安装
 pip install setuptools==65.7.0
