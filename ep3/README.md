@@ -67,6 +67,8 @@ CANN已安装cann-8.2.rc1
 yum install wget
 wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-aarch64.sh
 bash Miniconda3-latest-Linux-aarch64.sh
+conda create -n YOUR_ENV_NAME python==3.10
+conda activate YOUR_ENV_NAME
 
 # 安装tmux
 yum install tmux
