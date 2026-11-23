@@ -3,9 +3,9 @@
 ## 实验目标与项目介绍
 
 本实验旨在帮助学生熟悉 PyTorch 基础流程，学习数据处理、简单卷积网络搭建（CIFAR-10 训练与推理）以及大模型推理（Qwen KV-Cache 与采样策略）。
-本目录为 **NVIDIA GPU（CUDA）** 适配版本，包含：
-- `CIFAR10/exp1.ipynb`：CIFAR-10 简单分类网络训练与推理
-- `Qwen_Inference/exp2_cuda.ipynb`：Qwen2.5 大模型 CUDA 推理（调用同目录 `cuda_inference.py`）
+本目录为 **NVIDIA GPU（CUDA）** 适配版本，包含两个子任务：
+- `CIFAR10/task1_cifar10.ipynb`：任务一 — CIFAR-10 简单分类网络训练与推理
+- `Qwen_Inference/task2_qwen_inference.ipynb`：任务二 — Qwen2.5 大模型 CUDA 推理（调用同目录 `cuda_inference.py`）
 
 ---
 
@@ -93,7 +93,7 @@ watch -n 0.5 -d nvidia-smi
 
 数据与模型统一放置在 `ep0/nvidia/data/` 目录下：
 
-- **CIFAR-10 数据集**：如服务器已有预置数据可直接复制到 `ep0/nvidia/data/`；否则在 `CIFAR10/exp1.ipynb` 中将 `download=False` 改为 `download=True` 自动下载。
+- **CIFAR-10 数据集**：如服务器已有预置数据可直接复制到 `ep0/nvidia/data/`；否则在 `CIFAR10/task1_cifar10.ipynb` 中将 `download=False` 改为 `download=True` 自动下载。
 - **Qwen2.5-3B-Instruct 权重**（使用国内镜像 `hf-mirror.com` 加速）：
 
 ```bash
@@ -113,5 +113,5 @@ snapshot_download(
 
 在 Jupyter 页面右上角选择 `Python (ep0)` 内核，按顺序运行：
 
-1. **实验一（CIFAR-10 分类网络）**：打开 `CIFAR10/exp1.ipynb`，补全 `TODO 1`–`TODO 9` 后依次运行数据加载、训练保存与加载权重推理。
-2. **实验二（Qwen 大模型推理）**：打开 `Qwen_Inference/exp2_cuda.ipynb`，依次运行基础问答、Greedy / Top-K / Top-P 采样对比与不同长度测试，并结合 `nvidia-smi` 观察显存占用与释放。
+1. **任务一（CIFAR-10 分类网络）**：打开 `CIFAR10/task1_cifar10.ipynb`，补全 `TODO 1`–`TODO 9` 后依次运行数据加载、训练保存与加载权重推理。
+2. **任务二（Qwen 大模型推理）**：打开 `Qwen_Inference/task2_qwen_inference.ipynb`，依次运行基础问答、Greedy / Top-K / Top-P 采样对比与不同长度测试，并结合 `nvidia-smi` 观察显存占用与释放。

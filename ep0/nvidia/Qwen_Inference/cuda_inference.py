@@ -1,9 +1,8 @@
 """
 NVIDIA GPU (CUDA) inference implementation for ep0 Qwen_Inference.
 
-This module provides a CUDA-native counterpart to the original Ascend NPU
-inference code (`exp2.ipynb`, `utils/session.py`, `utils/inference.py`),
-without modifying any original files.
+This module provides a CUDA-native counterpart to the Ascend NPU inference code
+under `ep0/ascend/Qwen_Inference/`, without modifying any Ascend files.
 """
 
 from __future__ import annotations
@@ -341,7 +340,7 @@ def run_ep0_benchmarks(
     device_str: str = "cuda:0",
     torch_dtype: str = "bfloat16",
 ) -> None:
-    """Run all 7 experiment prompts from ep0/Qwen_Inference/exp2.ipynb on NVIDIA GPU."""
+    """Run all 7 ep0 Qwen inference test cases on NVIDIA GPU."""
     config = CudaInferenceConfig(
         hf_model_dir=model_dir,
         device_str=device_str,
