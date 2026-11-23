@@ -138,17 +138,18 @@ class PyTorchSession(Session):
         mask = self._to_device(mask)
         pos_ids = self._to_device(pos_ids)
 
-        # 3) 调模型
-        result = self.model(
-            input_ids=input_ids,
-            attention_mask=mask,
-            position_ids=pos_ids,
-            past_key_values=cache,
-        )
+        # 3) 调模型（推理阶段关闭梯度，避免长文本生成累积计算图导致 NPU OOM）
+        with torch.no_grad():
+            result = self.model(
+                input_ids=input_ids,
+                attention_mask=mask,
+                position_ids=pos_ids,
+                past_key_values=cache,
+            )
 
-        # 4) 更新 KV cache
-        if hasattr(self.kv_cache, "update"):
-            self.kv_cache.update(seq_len, result[1])
+            # 4) 更新 KV cache
+            if hasattr(self.kv_cache, "update"):
+                self.kv_cache.update(seq_len, result[1])
 
         # 5) 返回 logits
         logits = result[0].detach().cpu().numpy()
